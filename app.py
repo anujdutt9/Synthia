@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import gradio as gr
 from gradio_pdf import PDF
 from heygen_session_manager import create_new_session, start_and_display_session, send_task, close_session
-from utils.avatars import AVATAR_NAMES, AVATAR_VOICES
+from utils.avatars import AVATAR_NAMES
 
 
 # Load the environment variables
@@ -74,7 +74,6 @@ with gr.Blocks(theme=gr.themes.Ocean()) as demo:
 
         with gr.Column(scale=5):
             avatar_radio = gr.Radio(choices=AVATAR_NAMES, label="Select an Avatar", value=AVATAR_NAMES[0])
-            voice_radio = gr.Radio(choices=AVATAR_VOICES, label="Select a Voice", value=AVATAR_VOICES[0])
             create_button = gr.Button("Create Session")
             start_button = gr.Button("Start Session", variant="secondary")
             close_button = gr.Button("Close Session", variant="stop")
@@ -84,14 +83,14 @@ with gr.Blocks(theme=gr.themes.Ocean()) as demo:
 
 
     # -------------- BUTTON LOGIC ----------------
-    def handle_create_session(avatar_id, voice_id, status):
-        session_info, started, status = create_new_session(avatar_id, voice_id, status)
+    def handle_create_session(avatar_id, status):
+        session_info, started, status = create_new_session(avatar_id, status)
         return session_info, started, status
 
 
     create_button.click(
         fn=handle_create_session,
-        inputs=[avatar_radio, voice_radio, status_state],
+        inputs=[avatar_radio, status_state],
         outputs=[session_info_state, session_started_state, status_state],
     )
 

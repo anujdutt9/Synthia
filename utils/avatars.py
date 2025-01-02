@@ -11,4 +11,6 @@ AVATAR_CHOICES = [
 AVATAR_NAMES = [avatar["name"] for avatar in AVATAR_CHOICES]
 AVATAR_FILES = [avatar["file"] for avatar in AVATAR_CHOICES]
 AVATAR_VOICES = [avatar["voice"] for avatar in AVATAR_CHOICES]
-AVATAR_IDS = {avatar["name"]: avatar["avatar"] for avatar in AVATAR_CHOICES}
+
+AVATAR_NAME_IDS = {avatar["name"]: avatar["avatar"] for avatar in AVATAR_CHOICES}
+AVATAR_VOICE_IDS = {avatar["name"]: avatar["voice"] for avatar in AVATAR_CHOICES}

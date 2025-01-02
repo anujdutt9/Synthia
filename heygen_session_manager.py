@@ -2,6 +2,7 @@ import os
 import requests
 import logging
 from dotenv import load_dotenv
+from utils.avatars import AVATAR_NAME_IDS, AVATAR_VOICE_IDS
 
 
 # Configure logging
@@ -23,13 +24,18 @@ def update_status(existing_status, new_message):
     """
     return existing_status + new_message + "<br>"
 
-def create_new_session(avatar_id, voice_id, status):
+def create_new_session(avatar_name, status):
     """
     Creates a new streaming session with the Heygen API.
     """
-    if not avatar_id or not voice_id:
+    avatar_id = AVATAR_NAME_IDS.get(avatar_name)
+    voice_id = AVATAR_VOICE_IDS.get(avatar_name)
+
+    if not avatar_name or not voice_id:
         status = update_status(status, "No avatar or voice selected. Please select them first.")
         return None, None, status
+
+    print(f"Avatar ID: {avatar_id}, Voice ID: {voice_id}")
 
     payload = {
         "quality": "low",
