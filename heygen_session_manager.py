@@ -1,8 +1,14 @@
 import os
-import requests
 import logging
+import requests
 from dotenv import load_dotenv
-from utils.avatars import AVATAR_NAME_IDS, AVATAR_VOICE_IDS
+import streamlit as st
+from assistant import get_assistant_response
+
+
+load_dotenv()
+HEYGEN_API_KEY = os.getenv("HEYGEN_API_KEY")
+HEYGEN_SERVER_URL = os.getenv("HEYGEN_SERVER_URL")
 
 
 # Configure logging
@@ -12,30 +18,15 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Load the environment variables
-load_dotenv()
-HEYGEN_API_KEY = os.getenv("HEYGEN_API_KEY")
-HEYGEN_SERVER_URL = os.getenv("HEYGEN_SERVER_URL")
 
+def update_status(message):
+    st.markdown(f"**Status:** {message}")
+    logger.info(message)
 
-def update_status(existing_status, new_message):
-    """
-    Simple helper to append a new status message to an existing one.
-    """
-    return existing_status + new_message + "<br>"
-
-def create_new_session(avatar_name, status):
-    """
-    Creates a new streaming session with the Heygen API.
-    """
-    avatar_id = AVATAR_NAME_IDS.get(avatar_name)
-    voice_id = AVATAR_VOICE_IDS.get(avatar_name)
-
-    if not avatar_name or not voice_id:
-        status = update_status(status, "No avatar or voice selected. Please select them first.")
-        return None, None, status
-
-    print(f"Avatar ID: {avatar_id}, Voice ID: {voice_id}")
+def create_new_session(avatar_id=None, voice_id=None):
+    if avatar_id is None or voice_id is None:
+        update_status("No avatar selected. Please select an avatar first.")
+        return
 
     payload = {
         "quality": "low",
@@ -54,32 +45,24 @@ def create_new_session(avatar_name, status):
 
         if response.status_code == 200:
             data = response.json()["data"]
-            status = update_status(status, "Session created successfully. Click 'Start Session' to begin streaming.")
-            return data, False, status
+            st.session_state.session_info = data
+            update_status("Session created successfully. Click 'Start Session' to begin streaming.")
         else:
-            status = update_status(status, f"Error creating session: {response.status_code} - {response.text}")
-            return None, None, status
-
+            update_status(f"Error creating session: {response.status_code} - {response.text}")
     except Exception as e:
         logger.exception("Exception during session creation.")
-        status = update_status(status, f"Exception occurred: {e}")
-        return None, None, status
+        update_status(f"Exception occurred: {e}")
 
-def start_and_display_session(session_info, status):
-    """
-    Starts the session (via the streaming.start endpoint) and returns an HTML block
-    that sets up the RTCPeerConnection using the sdp/ice data from Heygen.
-    """
-    if not session_info:
-        status = update_status(status, "Please create a session first.")
-        return None, True, status
+def start_and_display_session():
+    if not st.session_state.session_info:
+        update_status("Please create a session first.")
+        return
 
-    session_id = session_info["session_id"]
-    sdp = session_info["sdp"]["sdp"]
-    ice_servers = session_info["ice_servers2"]
+    session_id = st.session_state.session_info["session_id"]
+    sdp = st.session_state.session_info["sdp"]["sdp"]
+    ice_servers = st.session_state.session_info["ice_servers2"]
 
-    # Generate HTML + JS snippet to embed a live video stream
-    video_html = f"""
+    st.session_state.video_html = f"""
     <video id="mediaElement" autoplay playsinline style="width: 100%; max-height: 400px; border: 1px solid #ccc;"></video>
     <div id="status" style="margin-top:10px; font-family: Arial, sans-serif;"></div>
 
@@ -157,51 +140,42 @@ def start_and_display_session(session_info, status):
     </script>
     """
 
-    status = update_status(status, "Session started.")
-    return video_html, True, status
+    st.session_state.session_started = True
+    update_status("Session started.")
 
-def send_task(session_info, question, status):
-    """
-    Sends TTS text (or any text) to the Heygen streaming task endpoint.
-    """
-    if not session_info:
-        status = update_status(status, "Please create a session first.")
-        return status
-    if not question:
-        status = update_status(status, "Task input is empty.")
-        return status
+def send_task(question: str):
+    if not st.session_state.session_info:
+        update_status("Please create a session first.")
+        return
+    text = get_assistant_response(question)
+    if not text:
+        update_status("Task input is empty.")
+        return
 
-    session_id = session_info["session_id"]
-
+    session_id = st.session_state.session_info["session_id"]
     try:
         response = requests.post(
             f"{HEYGEN_SERVER_URL}/v1/streaming.task",
             headers={"Content-Type": "application/json", "X-Api-Key": HEYGEN_API_KEY},
-            json={"session_id": session_id, "text": question},
+            json={"session_id": session_id, "text": text},
         )
 
         logger.debug(f"Task response: {response.status_code} - {response.text}")
 
         if response.status_code == 200:
-            status = update_status(status, "Task sent successfully.")
+            update_status("Task sent successfully.")
         else:
-            status = update_status(status, f"Error sending task: {response.status_code} - {response.text}")
-        return status
-
+            update_status(f"Error sending task: {response.status_code} - {response.text}")
     except Exception as e:
         logger.exception("Exception when sending task.")
-        status = update_status(status, f"Exception occurred: {e}")
-        return status
+        update_status(f"Exception occurred: {e}")
 
-def close_session(session_info, status):
-    """
-    Closes an existing session.
-    """
-    if not session_info:
-        status = update_status(status, "No session to close.")
-        return None, False, None, status  # Return a cleared state
+def close_session():
+    if not st.session_state.session_info:
+        update_status("No session to close.")
+        return
 
-    session_id = session_info["session_id"]
+    session_id = st.session_state.session_info["session_id"]
 
     try:
         response = requests.post(
@@ -213,13 +187,12 @@ def close_session(session_info, status):
         logger.debug(f"Close session response: {response.status_code} - {response.text}")
 
         if response.status_code == 200:
-            status = update_status(status, "Session closed successfully.")
-            return None, False, None, status  # Clear out session_info, started flag, and video
+            update_status("Session closed successfully.")
+            st.session_state.session_info = None
+            st.session_state.session_started = False
+            st.session_state.video_html = None
         else:
-            status = update_status(status, f"Error closing session: {response.status_code}")
-            return session_info, True, None, status
-
+            update_status(f"Error closing session: {response.status_code}")
     except Exception as e:
         logger.exception("Exception when closing session.")
-        status = update_status(status, f"Exception occurred: {e}")
-        return session_info, True, None, status
+        update_status(f"Exception occurred: {e}")
