@@ -30,7 +30,7 @@ if "selected_avatar" not in st.session_state:
     st.session_state.selected_avatar = AVATAR_CHOICES[0]
 
 # Layout
-st.title("Synthia")
+st.title("Synthia - Heygen Streaming Demo")
 
 left_col, right_col = st.columns([1, 1])
 
@@ -58,7 +58,7 @@ with right_col:
     # Avatar Selection (Radio Buttons)
     avatar_names = [a["name"] for a in AVATAR_CHOICES]
     default_index = avatar_names.index(st.session_state.selected_avatar["name"])
-    chosen_avatar_name = st.radio("Select an Avatar", avatar_names, index=default_index)
+    chosen_avatar_name = st.radio("Select an Avatar", avatar_names, index=default_index, horizontal=True)
 
     # Update state whenever a new avatar is chosen
     if chosen_avatar_name != st.session_state.selected_avatar["name"]:
