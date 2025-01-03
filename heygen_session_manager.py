@@ -3,7 +3,7 @@ import logging
 import requests
 from dotenv import load_dotenv
 import streamlit as st
-from assistant import get_assistant_response
+from assistant import get_chatllm_response
 
 
 load_dotenv()
@@ -142,12 +142,14 @@ def start_and_display_session():
 
     st.session_state.session_started = True
     update_status("Session started.")
+    # Force a rerun to refresh the UI immediately
+    # st.experimental_rerun()
 
-def send_task(question: str):
+def send_task(question: str, relevant_chunks: str):
     if not st.session_state.session_info:
         update_status("Please create a session first.")
         return
-    text = get_assistant_response(question)
+    text = get_chatllm_response(question, relevant_chunks)
     if not text:
         update_status("Task input is empty.")
         return
