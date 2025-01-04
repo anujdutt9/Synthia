@@ -69,6 +69,7 @@ Create a .env file in the root directory with the following content:
    # HeyGen API Settings
   HEYGEN_API_KEY=<your_heygen_api_key>
   HEYGEN_SERVER_URL=<your_heygen_server_url>
+  OPENAI_API_KEY=<your_openai_api_key>
    ```
 
 3️⃣ Run the Application
