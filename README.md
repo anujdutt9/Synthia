@@ -30,6 +30,19 @@ Synthia is a Streamlit-based AI application that allows users to upload PDFs and
 
 ### 🤖 Select an Avatar
 
+#### 🖼️ Avatar Options
+
+| Avatar Name | Role	 |  Description   |
+| ------- | ------------ | --------------------- |
+| Judy	  | Teacher	     | Formal and professional avatar |
+| Bryan	  | Fitness Coach |	Energetic and engaging avatar |
+| Silas	  | Customer Support |	Helpful and friendly avatar |
+
+https://github.com/user-attachments/assets/6b9bda5f-8b0a-4382-90bc-a3cc6b9b2917
+
+https://github.com/user-attachments/assets/23c9773b-fdb6-4d41-a815-9f1aa7d906a2
+
+https://github.com/user-attachments/assets/1068c96f-0c7c-4b39-b2e9-6587537f40c7
 
 ### 🎥 Create and Start a Video Session
 
@@ -81,16 +94,6 @@ Create a .env file in the root directory with the following content:
 2.	Access the app in your browser: Navigate to the local URL provided in the terminal (e.g., http://localhost:8501).
 
 3. Upload a PDF, select an avatar, and start interacting with Synthia!
-
----
-
-# 🖼️ Avatar Options
-
-| Avatar Name | Role	 |  Description   |
-| ------- | ------------ | --------------------- |
-| Judy	  | Teacher	     | Formal and professional avatar |
-| Bryan	  | Fitness Coach |	Energetic and engaging avatar |
-| Silas	  | Customer Support |	Helpful and friendly avatar |
 
 ---
 
