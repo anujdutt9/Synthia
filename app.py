@@ -88,10 +88,6 @@ else:
         store_name = fpath_pdf.name.split('.')[0]
         fpath_index = Path(f"{store_name}.faiss")
         vectorstores = get_text_embeddings(fpath_pdf, chunks, fpath_index)
-        # relevant_chunks = get_relevant_chunks("Explain the concept of self-attention in transformers.", vectorstores)
-        # print(f"Text: {text}\n")
-        # print(f"Chunks: {chunks}\n")
-        # print(f"Relevant Chunks: {relevant_chunks}\n")
 
         # Left column: PDF viewer
         with left_col:
