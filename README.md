@@ -59,14 +59,13 @@ https://github.com/user-attachments/assets/1068c96f-0c7c-4b39-b2e9-6587537f40c7
 1. Clone this repository:
     ```bash
     git clone git@github.com:anujdutt9/Synthia.git
-    cd synthia
+    cd Synthia
     ```
 
 2. Create a virtual environment and activate it:
     ```bash
    python3 -m venv venv
-    source venv/bin/activate   # macOS/Linux
-    .\venv\Scripts\activate    # Windows
+   source venv/bin/activate
     ```
 
 3. Install the required dependencies:
