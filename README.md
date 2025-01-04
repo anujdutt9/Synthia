@@ -18,11 +18,19 @@ Synthia is a Streamlit-based AI application that allows users to upload PDFs and
 
 ---
 
+# 🛠️ Demo
+
+![Synthia Demo]()
+
+---
+
 # 🎥 UI in Action
 
 ###  📄 Upload a PDF
 
 ### 🤖 Select an Avatar
+
+![Sample Avatars]()
 
 ### 🎥 Create and Start a Video Session
 
@@ -32,19 +40,13 @@ Synthia is a Streamlit-based AI application that allows users to upload PDFs and
 
 ---
 
-# 🛠️ Demo
-
-![Synthia Demo]()
-
----
-
 # 🚀 Getting Started
 
 1️⃣ Installation
 
 1. Clone this repository:
     ```bash
-    git clone https://github.com/yourusername/synthia.git
+    git clone git@github.com:anujdutt9/Synthia.git
     cd synthia
     ```
 
