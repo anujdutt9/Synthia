@@ -1,3 +1,4 @@
+import os
 import logging
 from pathlib import Path
 from streamlit.components.v1 import html
@@ -24,6 +25,9 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 logger = logging.getLogger(__name__)
+
+# Avatar video directory
+AVATAR_VIDEO_TEMPLATES = "avatar_templates"
 
 # Streamlit Page Configuration
 st.set_page_config(page_title="Synthia", layout="wide")
@@ -103,6 +107,7 @@ else:
         with right_col:
             # Avatar Selection (Radio Buttons)
             st.subheader("Select an Avatar")
+            # Display the avatar selection radio buttons
             avatar_names = [a["name"] for a in AVATAR_CHOICES]
             default_index = avatar_names.index(st.session_state.selected_avatar["name"])
             chosen_avatar_name = st.radio(
