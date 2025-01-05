@@ -34,6 +34,8 @@ Synthia is a Streamlit-based AI application that allows users to upload PDFs and
 
 #### 🖼️ Avatar Options
 
+You can select one of the following Avatars for this demo.
+
 | Avatar Name | Role	 |  Description   |
 | ------- | ------------ | --------------------- |
 | Judy	  | Teacher	     | Formal and professional avatar |
