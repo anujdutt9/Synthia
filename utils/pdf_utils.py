@@ -1,7 +1,7 @@
 import os.path
 from dotenv import load_dotenv
 from pathlib import Path
-from pypdf import PdfReader
+from markitdown import MarkItDown
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
@@ -11,12 +11,16 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 
 def get_pdf_text(fpath_pdf: Path):
-    pdf_reader = PdfReader(fpath_pdf)
-    text = ""
-    for page in pdf_reader.pages:
-        text += page.extract_text()
+    md = MarkItDown()
+    result = md.convert(str(fpath_pdf))
+    text_content = result.text_content
+    # Filter out lines with 1 or 2 words
+    filtered_lines = [
+        line for line in text_content.split("\n")
+        if len(line.split()) > 2
+    ]
 
-    return text
+    return "\n".join(filtered_lines)
 
 
 def get_chunks_from_text(text: str, chunk_size: int = 1000, chunk_overlap: int = 200):
@@ -29,6 +33,7 @@ def get_chunks_from_text(text: str, chunk_size: int = 1000, chunk_overlap: int =
 
     return chunks
 
+
 def get_text_embeddings(fpath_pdf: Path, chunks: list[str], fpath_index: Path):
     embeddings = OpenAIEmbeddings()
     if os.path.exists(fpath_index):
@@ -36,7 +41,7 @@ def get_text_embeddings(fpath_pdf: Path, chunks: list[str], fpath_index: Path):
     else:
         vectorstores = FAISS.from_texts(chunks, embeddings)
         store_name = fpath_pdf.name.split(".")[0]
-        vectorstores.save_local(f"{store_name}.faiss")
+        vectorstores.save_local(f"vectorstores/{store_name}.faiss")
         return vectorstores
 
 def get_relevant_chunks(query: str, vectorstores: FAISS, top_k: int = 3):
