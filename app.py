@@ -1,4 +1,4 @@
-import os
+# Main Streamlit app for Synthia, an interactive AI assistant.
 import logging
 from pathlib import Path
 from streamlit.components.v1 import html
