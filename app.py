@@ -1,4 +1,3 @@
-# Main Streamlit app for Synthia, an interactive AI assistant.
 import logging
 from pathlib import Path
 from streamlit.components.v1 import html
@@ -12,10 +11,8 @@ from heygen_session_manager import (
     close_session
 )
 from utils.pdf_utils import (
-    get_pdf_text,
-    get_chunks_from_text,
-    get_text_embeddings,
-    get_relevant_chunks
+    get_agent_executor,
+    get_llm_response,
 )
 
 
@@ -49,6 +46,8 @@ if "pdf_bytes" not in st.session_state:
     st.session_state.pdf_bytes = None
 if "pdf_name" not in st.session_state:
     st.session_state.pdf_name = None
+if "agent_executor" not in st.session_state:
+    st.session_state.agent_executor = None
 
 # Step 1: Upload the PDF
 if st.session_state.pdf_bytes is None:
@@ -86,12 +85,16 @@ else:
     if not temp_pdf_file.exists() or temp_pdf_file.stat().st_size == 0:
         st.error("The uploaded PDF file is empty or missing. Please re-upload the file.")
     else:
-        fpath_pdf = Path(temp_pdf_file)
-        text = get_pdf_text(fpath_pdf)
-        chunks = get_chunks_from_text(text)
-        store_name = fpath_pdf.name.split('.')[0]
-        fpath_index = Path(f"{store_name}.faiss")
-        vectorstores = get_text_embeddings(fpath_pdf, chunks, fpath_index)
+        # Preprocessing: Load and process the PDF, create initialize agent
+        if st.session_state.agent_executor is None:
+            with st.spinner("Processing PDF and setting up AI Assistant..."):
+                fpath_pdf = Path(temp_pdf_file)
+                store_name = fpath_pdf.name.split('.')[0]
+                fpath_index = Path(f"vectorstores/{store_name}.faiss")
+                # Initialize the agent executor
+                agent_executor = get_agent_executor(str(fpath_pdf), str(fpath_index))
+                st.session_state.agent_executor = agent_executor
+                st.success("AI Assistant is ready!")
 
         # Left column: PDF viewer
         with left_col:
@@ -147,15 +150,13 @@ else:
             # Textbox for user input
             st.subheader("Ask a Question")
             question_text = st.text_input(
-                "Type your question here:", placeholder="Enter your question", key="question_input"
+                "Type your question here:", placeholder="Enter your question", key="question_input", label_visibility="hidden"
             )
-
-            # Get relevant chunks based on the question
-            relevant_chunks = get_relevant_chunks(question_text, vectorstores)
 
             # Submit button for sending the question
             if st.button("Submit Question"):
                 if question_text.strip():
-                    send_task(question_text, relevant_chunks)
+                    response = get_llm_response(question_text, st.session_state.agent_executor)
+                    send_task(response)
                 else:
                     st.warning("Please enter a question before submitting.")
