@@ -157,8 +157,8 @@ def initialize_agent_executor(documents: List, vector_store: FAISS) -> AgentExec
         tools,
         llm,
         agent="zero-shot-react-description",
-        verbose=True,
-        return_intermediate_steps=False,
+        verbose=False,                   # Set to True for debugging
+        return_intermediate_steps=False, # Set to True for debugging
         handle_parsing_errors=True
     )
 
