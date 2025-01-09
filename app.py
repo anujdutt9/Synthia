@@ -1,3 +1,7 @@
+# Streamlit app for Synthia, an interactive AI assistant for PDF documents.
+# This app allows users to upload a PDF document, chat with Synthia, and view the document interactively.
+# The app uses the Heygen API for video streaming and the Synthia AI model for question-answering.
+
 import logging
 from pathlib import Path
 from streamlit.components.v1 import html
