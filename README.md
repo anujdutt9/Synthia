@@ -50,6 +50,8 @@ https://github.com/user-attachments/assets/1068c96f-0c7c-4b39-b2e9-6587537f40c7
 
 ### 🎥 Create and Start a Video Session
 
+https://github.com/user-attachments/assets/3ab91cad-84b0-4e21-b982-7fa0f051aaa0
+
 ### Ask a Question and Get a Video Response
 
 ### Close the Video Session
