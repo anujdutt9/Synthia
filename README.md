@@ -54,6 +54,8 @@ https://github.com/user-attachments/assets/3ab91cad-84b0-4e21-b982-7fa0f051aaa0
 
 ### Ask a Question and Get a Video Response
 
+https://github.com/user-attachments/assets/2edf4ac0-7555-41cc-95ea-a27663fa0a96
+
 ### Close the Video Session
 
 ---
