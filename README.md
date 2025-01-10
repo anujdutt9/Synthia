@@ -20,7 +20,7 @@ Synthia is a Streamlit-based AI application that allows users to upload PDFs and
 
 # 🛠️ Demo
 
-![Synthia Demo]()
+[![Synthia Demo](https://img.youtube.com/vi/hoD3aa_8MFs/0.jpg)](https://www.youtube.com/watch?v=hoD3aa_8MFs)
 
 ---
 
@@ -55,8 +55,6 @@ https://github.com/user-attachments/assets/3ab91cad-84b0-4e21-b982-7fa0f051aaa0
 ### Ask a Question and Get a Video Response
 
 https://github.com/user-attachments/assets/2edf4ac0-7555-41cc-95ea-a27663fa0a96
-
-### Close the Video Session
 
 ---
 
